@@ -18,6 +18,7 @@ wget https://github.com/Zybyte85/ZXP/releases/latest/download/zxp -P ~/.local/bi
 - [ ] Add go back to previous directory
 - [ ] Add details about the file next to it
 - [ ] Add opening files
+- [ ] Add terminal command capability
 
 ## How YOU can help
 - If you know Python, look at the issues or the planned features above and try to get them to work!
