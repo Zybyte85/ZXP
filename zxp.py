@@ -120,7 +120,7 @@ def explorer(stdscr):
         match user_input:
             case ":quit" | ":q":
                 exit(0)
-            case ":back" | ":b":
+            case ":back" | ":b" | "..":
                 current_dir = os.path.dirname(current_dir)
             case _:
                 full_path = os.path.join(current_dir, user_input)
