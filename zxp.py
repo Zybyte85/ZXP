@@ -37,7 +37,10 @@ def draw_menu(stdscr, files, current_dir, current_input):
         if len(i) > longest:
             longest = len(i)
 
-        pad.addstr(current_line, (current_column * longest) + (current_column != 0) * 2, i, BLUE_AND_BLACK if i[0] == "📂" else WHITE_AND_BLACK)
+        try:
+            pad.addstr(current_line, (current_column * longest) + (current_column != 0) * 2, i, BLUE_AND_BLACK if i[0] == "📂" else WHITE_AND_BLACK)
+        except curses.error:
+            pass  # This happens when the terminal is too small. Temporary fix. Need to figure out a better way to handle this, like adding scrolling.
         current_line += 1
     
     pad.refresh(0, 0, 1, consts.INDENT, h - 2, w - consts.INDENT)
