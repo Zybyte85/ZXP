@@ -62,7 +62,7 @@ def get_input(stdscr, current_dir):
     current_input = ""
     while True:
         input_win.clear()
-        input_win.addstr(0, 0, f"Enter path: {current_input}", curses.A_BOLD)
+        input_win.addstr(0, 0, f"> {current_input}", curses.A_BOLD)
         input_win.refresh()
 
         try:
@@ -103,33 +103,42 @@ def format_files(directory, files):
     new.sort(key=lambda x: (not x.startswith("📂 "), x))
     return new
 
-def get_files(directory):
-    visible_files = [f for f in os.listdir(directory) if not f.startswith('.')]
+def get_files(directory, see_hidden=False):
+    if see_hidden:
+        visible_files = os.listdir(directory)
+    else:
+        visible_files = [f for f in os.listdir(directory) if not f.startswith('.')]
     formatted_files = format_files(directory, visible_files)
     return formatted_files
 
 def explorer(stdscr):
     current_dir = os.getcwd()
     h, w = stdscr.getmaxyx()
+    see_hidden = False
 
     while True:
-        files = get_files(current_dir)
+        files = get_files(current_dir, see_hidden)
         draw_menu(stdscr, files, current_dir, "")
 
         user_input = get_input(stdscr, current_dir)
-        match user_input:
-            case ":quit" | ":q":
-                exit(0)
-            case ":back" | ":b" | "..":
-                current_dir = os.path.dirname(current_dir)
-            case _:
-                full_path = os.path.join(current_dir, user_input)
 
-                if os.path.exists(full_path):
-                    if os.path.isdir(full_path):
-                        current_dir = full_path
+        if user_input in [":quit", ":q"]:
+            exit(0)
+        elif user_input in [":back", ":b", ".."]:
+            current_dir = os.path.dirname(current_dir)
+        elif user_input in [":hidden", ":h"]:
+            see_hidden = not see_hidden
 
+        elif user_input.startswith("$"):
+            os.system(user_input[1:]) # Run command in subshell
+        else:
+            full_path = os.path.join(current_dir, user_input)
 
+            if os.path.exists(full_path):
+                if os.path.isdir(full_path):
+                    current_dir = full_path
+                else:
+                    os.system(f"xdg-open '{full_path}'")
         
 def main():
     wrapper(explorer)
