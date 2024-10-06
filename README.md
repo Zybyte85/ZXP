@@ -6,6 +6,7 @@ After you install it, just run `zxp` and it will open up. After that, you just t
 ### Commands
 - `:quit, :q`  quits out of the program
 - `:back, :b`  goes back a directory
+- `:hidden, :h` toggles hidden files
 - `$ <command>` runs whatever command you specify
 
 ## Installation
