@@ -6,7 +6,9 @@ import consts
 import readline
 import glob
 
-emojis = json.load(open(os.path.join(os.path.dirname(__file__), "emojis.json")))
+emojis = json.load(
+    open(os.path.join(os.path.dirname(__file__), "emojis.json")))
+
 
 def draw_menu(stdscr, files, current_dir, current_input):
     curses.init_pair(1, consts.ACCENT_COLOR, curses.COLOR_BLACK)
@@ -19,6 +21,11 @@ def draw_menu(stdscr, files, current_dir, current_input):
 
     stdscr.clear()
     h, w = stdscr.getmaxyx()
+
+    if consts.SHOW_HELP == True:
+        stdscr.addstr(  # Help text
+            h - 1,
+            w - len(consts.HELP_TEXT) - 1, consts.HELP_TEXT, curses.A_BOLD,)
 
     stdscr.addstr(0, 0, current_dir, HIGHLIGHT)
 
@@ -38,25 +45,39 @@ def draw_menu(stdscr, files, current_dir, current_input):
             longest = len(i)
 
         try:
-            pad.addstr(current_line, (current_column * longest) + (current_column != 0) * 2, i, BLUE_AND_BLACK if i[0] == "📂" else WHITE_AND_BLACK)
+            # Highlight the current input (DOESN'T WORK THOUGH WHYYYYY)
+            if current_input == i:
+                pad.addstr(
+                    current_line,
+                    (current_column * longest) + (current_column != 0) * 2,
+                    i,
+                    HIGHLIGHT if i[0] == "📂" else HIGHLIGHT)
+            else:
+                pad.addstr(
+                    current_line,
+                    (current_column * longest) + (current_column != 0) * 2,
+                    i,
+                    BLUE_AND_BLACK if i[0] == "📂" else WHITE_AND_BLACK)
         except curses.error:
-            pass  # This happens when the terminal is too small. Temporary fix. Need to figure out a better way to handle this, like adding scrolling.
+            pass  # This happens when the terminal is too small. Temporary fix.
         current_line += 1
-    
+
     pad.refresh(0, 0, 1, consts.INDENT, h - 2, w - consts.INDENT)
 
+
 def complete_path(text, state):
-    return (glob.glob(os.path.expanduser(text) + '*') + [None])[state]
+    return (glob.glob(os.path.expanduser(text) + "*") + [None])[state]
+
 
 def get_input(stdscr, current_dir):
     curses.echo()
-    readline.set_completer_delims(' \t\n;')
+    readline.set_completer_delims(" \t\n;")
     readline.parse_and_bind("tab: complete")
     readline.set_completer(complete_path)
 
     h, w = stdscr.getmaxyx()
 
-    input_win = curses.newwin(1, w, h-2, 0)
+    input_win = curses.newwin(1, w - 45, h - 1, 0)
     input_win.keypad(1)
 
     current_input = ""
@@ -71,10 +92,11 @@ def get_input(stdscr, current_dir):
             exit(0)
         if char == 219:
             exit(0)
-        if char == ord('\n'):  # Enter key
+        if char == ord("\n"):  # Enter key
             break
-        elif char == ord('\t'):  # Tab key
-            completions = glob.glob(os.path.join(current_dir, current_input) + '*')
+        elif char == ord("\t"):  # Tab key
+            completions = glob.glob(os.path.join(
+                current_dir, current_input) + "*")
             if len(completions) == 1:
                 current_input = os.path.relpath(completions[0], current_dir)
             elif len(completions) > 1:
@@ -87,6 +109,7 @@ def get_input(stdscr, current_dir):
 
     curses.noecho()
     return current_input
+
 
 def format_files(directory, files):
     new = []
@@ -103,13 +126,16 @@ def format_files(directory, files):
     new.sort(key=lambda x: (not x.startswith("📂 "), x))
     return new
 
+
 def get_files(directory, see_hidden=False):
     if see_hidden:
         visible_files = os.listdir(directory)
     else:
-        visible_files = [f for f in os.listdir(directory) if not f.startswith('.')]
+        visible_files = [f for f in os.listdir(
+            directory) if not f.startswith(".")]
     formatted_files = format_files(directory, visible_files)
     return formatted_files
+
 
 def explorer(stdscr):
     current_dir = os.getcwd()
@@ -130,7 +156,7 @@ def explorer(stdscr):
             see_hidden = not see_hidden
 
         elif user_input.startswith("$"):
-            os.system(user_input[1:]) # Run command in subshell
+            os.system(user_input[1:])  # Run command in subshell
         else:
             full_path = os.path.join(current_dir, user_input)
 
@@ -139,9 +165,11 @@ def explorer(stdscr):
                     current_dir = full_path
                 else:
                     os.system(f"xdg-open '{full_path}'")
-        
+
+
 def main():
     wrapper(explorer)
+
 
 if __name__ == "__main__":
     main()

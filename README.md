@@ -1,5 +1,17 @@
+<div align="center">
+  <img src="icon/zxp.svg" alt="Zxp logo" width="20%">
+</div>
+
 # ZXP
 Z-Explorer. The quickest file explorer you will use.
+
+Features:
+- Tiny binary size (About 7.7 MB)
+- Fast and efficient
+- Easy to use
+- Quick to navigate
+- Uses only about 13 MB of memory
+
 ## Usage
 After you install it, just run `zxp` and it will open up. After that, you just type in the directories that you want to go to.
 
