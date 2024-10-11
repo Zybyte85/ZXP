@@ -1,4 +1,4 @@
-<div align="center">
+<div>
   <img src="icon/zxp.svg" alt="Zxp logo" width="20%">
 </div>
 
