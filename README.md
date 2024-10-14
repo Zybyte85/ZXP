@@ -1,5 +1,5 @@
 <div>
-  <img src="icon/zxp.svg" alt="Zxp logo" width="20%">
+  <img src="zxp.svg" alt="Zxp logo" width="20%">
 </div>
 
 # ZXP
