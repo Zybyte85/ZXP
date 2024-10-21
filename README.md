@@ -24,7 +24,7 @@ After you install it, just run `zxp` and it will open up. After that, you just t
 ## Installation
 You can download the binary from the releases and put it in a PATH folder (such as ~/.local/bin/) or you can run this command to automatically do that for you
 ```
-wget https://github.com/Zybyte85/ZXP/releases/latest/download/zxp -P ~/.local/bin && chmod +x ~/.local/bin/zxp
+wget https://github.com/Zybyte85/ZXP/releases/latest/download/zxp -O ~/.local/bin/zxp && chmod +x ~/.local/bin/zxp
 ```
 ## Planned Features
 - [ ] Add copy/cut/paste
