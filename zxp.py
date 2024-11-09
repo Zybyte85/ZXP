@@ -22,15 +22,14 @@ def draw_menu(stdscr, files, current_dir, current_input):
     stdscr.clear()
     h, w = stdscr.getmaxyx()
 
-    if consts.SHOW_HELP == True:
-        stdscr.addstr(  # Help text
-            h - 1,
-            w - len(consts.HELP_TEXT) - 1, consts.HELP_TEXT, curses.A_BOLD,)
+    #if consts.SHOW_HELP == True:
+    #    stdscr.addstr(  # Help text
+    #        h - 1,
+    #        w - len(consts.HELP_TEXT) - 1, consts.HELP_TEXT, curses.A_BOLD,)
 
     stdscr.addstr(0, 0, current_dir, HIGHLIGHT)
 
-    pad = curses.newpad(h, w)
-    stdscr.refresh()
+    pad = curses.newpad(h, w) # h, w
 
     current_line = 0
     current_column = 0
@@ -42,16 +41,17 @@ def draw_menu(stdscr, files, current_dir, current_input):
             current_column += 1
 
         if len(i) > longest:
-            longest = len(i)
+            longest = len(i) + 1
 
         try:
-            # Highlight the current input (DOESN'T WORK THOUGH WHYYYYY)
-            if current_input == i:
+            # Make this work while typing instad of just after enter is pressed
+
+            if i[2:] == current_input:  # The [2:] is to remove the emoji
                 pad.addstr(
                     current_line,
                     (current_column * longest) + (current_column != 0) * 2,
                     i,
-                    HIGHLIGHT if i[0] == "📂" else HIGHLIGHT)
+                    HIGHLIGHT)
             else:
                 pad.addstr(
                     current_line,
@@ -62,7 +62,9 @@ def draw_menu(stdscr, files, current_dir, current_input):
             pass  # This happens when the terminal is too small. Temporary fix.
         current_line += 1
 
+    stdscr.refresh()
     pad.refresh(0, 0, 1, consts.INDENT, h - 2, w - consts.INDENT)
+    
 
 
 def complete_path(text, state):
@@ -141,10 +143,11 @@ def explorer(stdscr):
     current_dir = os.getcwd()
     h, w = stdscr.getmaxyx()
     see_hidden = False
+    user_input = ""
 
     while True:
         files = get_files(current_dir, see_hidden)
-        draw_menu(stdscr, files, current_dir, "")
+        draw_menu(stdscr, files, current_dir, user_input)
 
         user_input = get_input(stdscr, current_dir)
 

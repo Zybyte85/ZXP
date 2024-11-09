@@ -13,5 +13,3 @@ from curses import (
 
 INDENT = 4
 ACCENT_COLOR = COLOR_BLUE
-SHOW_HELP = True
-HELP_TEXT = "(:quit, :q), (:back, :b, ..), (:hidden, :h)"
