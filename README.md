@@ -15,6 +15,11 @@ Features:
 ## Usage
 After you install it, just run `zxp` and it will open up. After that, you just type in the directories that you want to go to.
 
+### File operations
+- `path/to/source :delete, :d, :remove, :rm` deletes source file/directory
+- `path/to/source :rename, :r new_name` renames source file/directory
+- `path/to/source :move, :m path/to/destiation` moves a file/directory
+
 ### Commands
 - `:quit, :q`  quits out of the program
 - `:back, :b`  goes back a directory
