@@ -5,6 +5,26 @@ from curses import wrapper
 import consts
 import readline
 import glob
+import logging
+import argparse
+import sys
+from shutil import rmtree
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-l', '--log', action='store_true', help='Enable logging (stores file where executable is)')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.2.0')
+args = parser.parse_args()
+
+if args.log:
+    logging.basicConfig(
+        filename="zxp.log",
+        encoding="utf-8",
+        filemode="a",
+        format="{asctime} - {levelname} - {message}",
+        style="{",
+        datefmt="%Y-%m-%d %H:%M",
+        level=logging.INFO
+    )
 
 emojis = json.load(
     open(os.path.join(os.path.dirname(__file__), "emojis.json")))
@@ -97,6 +117,11 @@ def get_input(stdscr, current_dir):
         if char == ord("\n"):  # Enter key
             break
         elif char == ord("\t"):  # Tab key
+            # Goofy autocomplete stuff
+
+            # TODO: Make it so it can autocomplete a path that isn't the entire input
+            # Example: path/to/file :m need/autocomplete/here   ignore the middle :m
+
             completions = glob.glob(os.path.join(
                 current_dir, current_input) + "*")
             if len(completions) == 1:
@@ -140,6 +165,8 @@ def get_files(directory, see_hidden=False):
 
 
 def explorer(stdscr):
+    logging.info("Starting explorer")
+
     current_dir = os.getcwd()
     h, w = stdscr.getmaxyx()
     see_hidden = False
@@ -151,8 +178,10 @@ def explorer(stdscr):
 
         user_input = get_input(stdscr, current_dir)
 
+        # All commands
         if user_input in [":quit", ":q"]:
-            exit(0)
+            logging.info("Quitting")
+            sys.exit(0)
         elif user_input in [":back", ":b", ".."]:
             current_dir = os.path.dirname(current_dir)
         elif user_input in [":hidden", ":h"]:
@@ -160,6 +189,31 @@ def explorer(stdscr):
 
         elif user_input.startswith("$"):
             os.system(user_input[1:])  # Run command in subshell
+
+        elif user_input in [":move", ":m", ":rename", ":r"]:
+            try:
+                command = user_input.split()
+                source = os.path.join(current_dir, command[0])
+                dest = os.path.join(current_dir, command[2])
+                os.rename(source, dest)
+                logging.info(f"Moved {source} to {dest}")
+            except:
+                logging.warning(f"Failed to move file from {source} to {dest}")
+
+        elif user_input in [":delete", ":d", ":remove", ":rm"]:
+            try:
+                command = user_input.split()
+                source = os.path.join(current_dir, command[0])
+                if os.path.isdir(source):
+                    rmtree(source)
+                    logging.info(f"Deleted directory {source}")
+                    continue
+                else:
+                    os.remove(source)
+                    logging.info(f"Deleted file {source}")
+            except:
+                logging.warning(f"Failed to delete file {source}")
+
         else:
             full_path = os.path.join(current_dir, user_input)
 
