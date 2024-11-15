@@ -3,7 +3,7 @@
 </div>
 
 # ZXP
-Z-Explorer. The quickest file explorer you will use.
+Very fast file explorer
 
 Features:
 - Tiny binary size (About 7.7 MB)
