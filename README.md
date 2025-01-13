@@ -1,9 +1,10 @@
-<div>
+<div align=center>
   <img src="zxp.svg" alt="Zxp logo" width="20%">
-</div>
+
 
 # ZXP
 Very fast file explorer
+</div>
 
 Features:
 - Tiny binary size (About 7.7 MB)
